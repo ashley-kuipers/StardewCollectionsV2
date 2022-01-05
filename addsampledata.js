@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 const ejs = require("ejs");
 
 
-const myModule = require('./item-data.js');
-const itemData = myModule.itemData;
-
+const myModule = require('./sample-data/item-data.js');
+const collectionsItemData = myModule.collectionsItemData;
+const commCenterItemData = myModule.commCenterItemData;
 
 
 // start express server
@@ -47,31 +47,30 @@ async function main(){
   const userSchema = new mongoose.Schema({
     name: String,
     password: String,
-    items:[itemSchema]
+    goal:{
+      communityCenter:[itemSchema],
+      collections:[itemSchema]
+    }
   })
 
   const User = mongoose.model("User", userSchema)
 
 //USERNAME PAGE
   app.get("/", function(req,res){
-    console.log(itemData[10])
-    const ashann = new User({
-      name:"ashann",
+    const test = new User({
+      name:"test",
       password:"password",
-      items:itemData
+      goal:{
+        communityCenter:commCenterItemData,
+        collections:collectionsItemData
+      }
     })
-    ashann.save()
+    test.save()
 
-    const tyler = new User({
-      name:"tyler",
-      password:"password",
-      items:itemData
-    })
-    tyler.save()
     console.log("data saved")
 
     res.render("index.ejs", {
-      message:""
+      message:"Sample data saved."
     })
   })
 

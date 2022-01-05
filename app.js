@@ -45,11 +45,16 @@ async function main() {
   const userSchema = new mongoose.Schema({
     name: String,
     password: String,
-    items:[itemSchema]
+    goal:{
+      communityCenter:[itemSchema],
+      collections:[itemSchema],
+      hidden:[itemSchema]
+    }
   })
   const User = mongoose.model("User", userSchema)
 
   // declare variables
+  let goalItems = []
 
   app.get("/", function(req,res){
     const error = req.query.error
@@ -88,26 +93,35 @@ async function main() {
       }
 
       if (error===""){
-        res.redirect("/user/"+ usernameEntered + "/choose")
+        res.redirect("/user/"+ usernameEntered + "/goal")
       } else {
         res.redirect("/?error=" + encodeURIComponent(error))
       }
     })
   })
 
-  app.get("/user/:user/choose", function(req,res){
+  app.get("/user/:user/goal", function(req,res){
     const username = req.params.user
     res.render("choose-goal.ejs", {
       username:username
     })
   })
 
-  app.get("/user/:user/collections", function(req,res){
+  app.get("/user/:user/goal/:goal", function(req,res){
     const username = req.params.user
+    const goal = req.params.goal
+
+    if (goal === "comm-center"){
+      goalItems = userInfo.goal.communityCenter
+    } else if (goal === "collections") {
+      goalItems = userInfo.goal.collections
+    } else {
+      goalItems = userInfo.goal.hidden
+    }
 
     // get category list
     let categories = []
-    for(item of userInfo.items){
+    for(item of goalItems){
       categories.push({
         title:item.category,
         link:item.categoryLink
@@ -118,8 +132,9 @@ async function main() {
     // send categories and buttons to template
     res.render("collections.ejs", {
       categories: categories,
-      items:userInfo.items,
-      username: username
+      items:goalItems,
+      username: username,
+      goal:goal
     })
   })
 
@@ -127,28 +142,35 @@ async function main() {
     res.render("test.ejs")
   })
 
-  app.post("/user/:user/collections/save", function(req,res){
+  app.post("/user/:user/:goal/save", function(req,res){
     const username = req.params.user
+    const goal = req.params.goal
     const changes = JSON.parse(req.body.changes)
+
 
     for (const change of changes){
       //look up item in database and update checked status (ONLY SAVING LAST ITEM IT SEES)
       User.findById(userInfo._id, function(err, user) {
-        var doc = user.items.id(change._id);
-        doc.checked = change.checked
+        var doc = user.goal[goal];
+        var doc2 = doc.id(change._id);
+        doc2.checked = change.checked
         user.save()
-        console.log("saved:" + doc.link)
+        console.log("saved:" + doc2.link)
       })
       // find changed button in userInfo and update checked value, then redirect back
-      for (item of userInfo.items){
+      for (item of goalItems){
         if (item.link === change.link){
           item.checked = change.checked
         }
       }
     }
-
     // database update working but takes forever, need to find workaround like on the to do list one with the array
-    res.redirect("/user/" + username + "/collections")
+    res.redirect("/user/" + username + "/goal/" + goal)
+  })
+
+  app.post("/:user/back", function(req,res){
+    username = req.params.user
+    res.redirect("/user/" + username + "/goal")
   })
 
 } // end of main

@@ -5,8 +5,11 @@
   <h1>Hello <%=username%>!</h1>
   <h5 class="mb-4">What are you trying to complete?</h5>
 
-  <a href="#" class="all-buttons button-shadows">Community Center</a>
-  <a href="/user/<%=username%>/collections" class="all-buttons button-shadows">All Collections</a><!-- change link here -->
+  <a href="/user/<%=username%>/goal/comm-center" class="all-buttons button-shadows category-button">Community Center</a>
+  <a href="/user/<%=username%>/goal/collections" class="all-buttons button-shadows category-button">All Collections</a>
+  <% if (username === "ashann") { %>
+  <a href="/user/<%=username%>/goal/hidden" class="all-buttons button-shadows category-button">Hidden</a>
+  <% } %>
 
 </div>
 

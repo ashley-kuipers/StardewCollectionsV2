@@ -85,12 +85,20 @@ $(document).ready(function(){
 
   // on form submit, check how many chagned buttons in array, if none, don't do anything and alert "no changes"
 
-  $("form").submit(function(e){
+  $("#save").submit(function(e){
     if(changedButtons.length === 0){
       e.preventDefault();
       alert("No changes have been made")
     } else {
       $("#changes").val(JSON.stringify(changedButtons)) // sends changes to the hidden input to go to server
+    }
+  });
+
+  $("#back").submit(function(e){
+    if(changedButtons.length > 0){
+      if(confirm("You have unsaved changes. These will be lost. Go back anyway?") ==false){
+        e.preventDefault();
+      }
     }
   });
 

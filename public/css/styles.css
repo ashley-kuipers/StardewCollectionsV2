@@ -173,7 +173,7 @@ a:hover{
 }
 
 .text-pane{
-  min-height:28.35rem;
+  min-height:25.35rem;
   max-height:100vh;
   color:var(--textDark);
   font-weight:bold;

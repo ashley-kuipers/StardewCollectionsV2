@@ -5,7 +5,7 @@
   <h1 class="mt-4">Collections</h1>
 
 
-  <form action="/user/<%=username%>/collections/save" method="post">
+  <form action="/user/<%=username%>/<%=goal%>/save" method="post" id="save">
     <div class="row">
       <div class="d-flex align-items-start">
 
@@ -49,15 +49,22 @@
           </div>
         </div>
         <div>
-          <button type="submit" class="all-buttons button-shadows w-100 p-2" id="save">
+          <button type="submit" class="all-buttons button-shadows w-100 p-2">
             Save
           </button>
+          </form>
+          <form class="" action="/<%=username%>/back" method="post" id="back">
+            <button type="submit" class="all-buttons button-shadows w-100 p-2">
+              Back to goals
+            </button>
+          </form>
+
         </div>
       </div>
 
     </div>
     </div> <!--end of row-->
-  </form>
+
 
 
   <!-- custom js -->
