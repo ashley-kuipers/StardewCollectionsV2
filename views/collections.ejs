@@ -8,58 +8,33 @@
   <form action="/user/<%=username%>/collections/save" method="post">
     <div class="row">
       <div class="d-flex align-items-start">
-      <!-- category buttons -->
-      <div class="nav flex-column nav-pills col-2 me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-        <% for (const category of categories) { %>
-          <button
-            class="all-buttons button-shadows category-button"
-            id="v-pills-<%=category.link%>-tab"
-            data-bs-toggle="pill"
-            data-bs-target="#v-pills-<%=category.link%>"
-            type="button"
-            role="tab"
-            aria-controls="v-pills-<%=category.link%>"
-            aria-selected="true"
-            ><%=category.title%>
-          </button>
-        <% } %>
-      </div>
 
+        <!-- category buttons -->
+        <div class="nav flex-column nav-pills col-2 me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          <% for (const category of categories) { %>
+            <button class="all-buttons button-shadows category-button" id="v-pills-<%=category.link%>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<%=category.link%>" type="button" role="tab"><%=category.title%></button>
+          <% } %>
+        </div>
 
+        <!-- items buttons -->
+        <div class="tab-content col-7 text-start" id="v-pills-tabContent" oncontextmenu="return false;">
+          <% for (const category of categories) { %>
+            <div class="tab-pane text-start" id="v-pills-<%=category.link%>" role="tabpanel">
 
-    <!-- items buttons -->
-      <div class="tab-content col-7 text-start" id="v-pills-tabContent" oncontextmenu="return false;">
-        <% for (const category of categories) { %>
-          <div class="tab-pane text-start" id="v-pills-<%=category.link%>" role="tabpanel" aria-labelledby="v-pills-<%=category.link%>-tab">
-            <% for (const item of items) { %>
+              <% for (const item of items) { %>
 
-              <div class="buttons-pane-form">
-                <% if (item.categoryLink === category.link) { %>
-                  <button type="button"
-                  class="all-buttons button-shadows item-button"
-                  data-checked="<%=item.checked%>"
-                  data-title1="<%=item.title1%>"
-                  data-info1="<%=item.info1%>"
-                  data-title2="<%=item.title2%>"
-                  data-info2="<%=item.info2%>"
-                  data-title3="<%=item.title3%>"
-                  data-info3="<%=item.info3%>"
-                  data-title4="<%=item.title4%>"
-                  data-info4="<%=item.info4%>"
-                  data-item="<%=item.itemName%>"
-                  data-link="<%=item.link%>"
-                  data-databid="<%=item._id%>"
-                  >
-                    <img src="/<%=item.imagePath%>" width="45">
-                  </button>
-                <% } %>
-              </div>
-              <!-- <input type="hidden" name="itemName" value="item.itemName%>"> -->
-              <!-- <input type="hidden" name="checked<item.link%>" id="checked<item.link%>" value=""> -->
-            <% } %>
+                <div class="buttons-pane-form">
+                  <% if (item.categoryLink === category.link) { %>
+                    <% const buttonObject = JSON.stringify(item) %>
+                    <button type="button" class="all-buttons button-shadows item-button" data-button="<%=buttonObject%>">
+                      <img src="/<%=item.imagePath%>" width="45">
+                    </button>
+                  <% } %>
+                </div>
+
+              <% } %>
+
             </div>
-
-
 
         <% } %>
       </div>
@@ -86,148 +61,6 @@
 
 
   <!-- custom js -->
-  <script>
-    let buttonInfo = {};
-    let changedButtons = []
-    $('.item-button').on({
-      mouseenter: function(){
-        buttonInfo = {
-          itemName: $(this).data("item"),
-          link: $(this).data("link"),
-          checked: $(this).data("checked"),
-          title1: $(this).data("title1"),
-          info1: $(this).data("info1"),
-          title2: $(this).data("title2"),
-          info2: $(this).data("info2"),
-          title3: $(this).data("title3"),
-          info3: $(this).data("info3"),
-          title4: $(this).data("title4"),
-          info4: $(this).data("info4"),
-          databid: $(this).data("databid")
-        }
-        let dataPaneHTML = "<p><span style='font-size:1.2rem'>" + buttonInfo.itemName + "</span><br><span style='font-weight: normal'><u>" + buttonInfo.title1 + "</u><br>" + buttonInfo.info1 + "<br><u>" + buttonInfo.title2 + "</u><br>" + buttonInfo.info2 + "<br><u>" + buttonInfo.title3 + "</u><br>" + buttonInfo.info3 + "<br><u>" + buttonInfo.title4 + "</u><br>" + buttonInfo.info4 + "</p></span>";
-        $('#item-info-hover').html(dataPaneHTML)
-      },
-      mouseleave: function(){
-        $('#item-info-hover').text("")
-      },
-      mousedown: function(e){
-        e.preventDefault()
-        switch (event.which) {
-        case 1:
-          // Left mouse button is pressed - set button as pressed
-          $(this).toggleClass('inset')
-          $(this).removeClass('green-background')
-
-
-
-          // if the button has the inset class, add to changed buttons array
-          // if button is already in changed array, remove that item first
-          const link = $(this).data("link")
-          let index;
-          changedButtons.some(function(entry, i) {
-              if (entry.itemName == String(link)) {
-                  index = i;
-                  return true;
-              }
-          });
-          if (index>0){
-            changedButtons.splice(index,1)
-          }
-
-          const checkedId = String("#checked" + $(this).data("link"))
-          if($(this).hasClass('inset')){
-            $(checkedId).val('true')
-            changedButtons.push({
-              itemName:$(this).data("link"),
-              checked: true,
-              databid: $(this).data("databid")
-            })
-          } else {
-            $(checkedId).val('false')
-            changedButtons.push({
-              itemName:$(this).data("link"),
-              checked: false,
-              databid: $(this).data("databid")
-            })
-          }
-
-
-          break
-        case 2:
-          // Middle mouse button is pressed - nothing
-          break
-        case 3:
-          // Right mouse button is pressed
-          const newid= "rightClicked-" + buttonInfo.link
-          if ($(this).hasClass('inset')){
-            break
-          } else {
-            if($("#" + newid).length > 0){
-              $("#" + newid).remove();
-              $(this).toggleClass('green-background');
-            } else {
-              $('#item-info-stay').append("<div id="+ newid + "><p><span style='font-size:1.2rem'>" + buttonInfo.itemName + "</span><br><span style='font-weight: normal;'><u>" + buttonInfo.title1 + "</u><br>" + buttonInfo.info1 + "</p></span></div>");
-              $(this).toggleClass('green-background')
-            };
-            break
-          }
-        default:
-          alert('Nothing')
-        }
-      },
-      backgroundExceptionsEvent: function(e){
-        const checked= $(this).data("checked")
-        const weather = $(this).data("info4")
-        if (checked === true){
-          $(this).addClass("inset")
-        }
-        if (weather === "Sun"){
-          $(this).addClass("yellow-background")
-        }
-        if (weather === "Rain"){
-          $(this).addClass("blue-background")
-        }
-        // on check, add value to the button that says true/false. When form submits with the save button, can access each button's value and update the database with
-        const checkedId = String("#checked" + $(this).data("link"))
-        if($(this).hasClass('inset')){
-          $(checkedId).val('true')
-        } else {
-          $(checkedId).val('false')
-        }
-      }
-  })
-
-
-
-    $(document).ready(function(){
-      // loading gif
-      $("#loader").addClass('hidden')
-
-      // category buttons
-      $("#v-pills-tab button:first-child").click().addClass('inset')
-      $("#v-pills-tab button:not(:first)").click(function(){
-        $("#v-pills-tab button:first-child").removeClass('inset')
-      })
-
-      // check for different background colors (and add checked value to button)
-      $(".item-button").trigger("backgroundExceptionsEvent");
-
-      // on form submit, check how many chagned buttons in array, if none, don't do anything and alert "no changes"
-
-      $("form").submit(function(e){
-        if(changedButtons.length === 0){
-          e.preventDefault();
-          alert("No changes have been made")
-        } else {
-          $("#changes").val(JSON.stringify(changedButtons))
-        }
-      });
-
-    })
-
-
-
-  </script>
+  <script type="text/javascript" src="/javascript/custom.js"></script>
 
 <%- include("partials/footer") -%>
