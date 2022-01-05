@@ -105,11 +105,6 @@ async function main() {
   app.get("/user/:user/collections", function(req,res){
     const username = req.params.user
 
-    // reload user data since we might have saved changes since we logged in (UPDATES ARE SLOW THOUGH)
-    // User.findOne({name: username}, (err, userData) => {
-    //   userInfo = userData
-    // })
-
     // get category list
     let categories = []
     for(item of userInfo.items){
@@ -120,6 +115,7 @@ async function main() {
     }
     categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
 
+    // send categories and buttons to template
     res.render("collections.ejs", {
       categories: categories,
       items:userInfo.items,
@@ -134,15 +130,21 @@ async function main() {
   app.post("/user/:user/collections/save", function(req,res){
     const username = req.params.user
     const changes = JSON.parse(req.body.changes)
-    console.log("server: " +changes)
-    for (change of changes){
-      //look up item in database and update checked status
+
+    for (const change of changes){
+      //look up item in database and update checked status (ONLY SAVING LAST ITEM IT SEES)
       User.findById(userInfo._id, function(err, user) {
         var doc = user.items.id(change._id);
         doc.checked = change.checked
         user.save()
+        console.log("saved:" + doc.link)
       })
       // find changed button in userInfo and update checked value, then redirect back
+      for (item of userInfo.items){
+        if (item.link === change.link){
+          item.checked = change.checked
+        }
+      }
     }
 
     // database update working but takes forever, need to find workaround like on the to do list one with the array
