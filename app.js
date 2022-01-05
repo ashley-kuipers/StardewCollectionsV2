@@ -71,6 +71,8 @@ async function main() {
   app.post("/signin", function(req,res){
     const usernameEntered = req.body.username.toLowerCase()
     const passwordEntered = req.body.password
+
+    // go through sign in procedure, get user data
     User.findOne({name: usernameEntered}, (err, userData) => {
       let error=""
       if (userData) {
@@ -102,10 +104,7 @@ async function main() {
 
   app.get("/user/:user/collections", function(req,res){
     const username = req.params.user
-    User.findOne({name: username}, (err, userData) => {
-      userInfo = userData
-      console.log("Data updated")
-    })
+
     // get category list
     let categories = []
     for(item of userInfo.items){
@@ -116,6 +115,7 @@ async function main() {
     }
     categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
 
+    // send categories and buttons to template
     res.render("collections.ejs", {
       categories: categories,
       items:userInfo.items,
@@ -130,17 +130,24 @@ async function main() {
   app.post("/user/:user/collections/save", function(req,res){
     const username = req.params.user
     const changes = JSON.parse(req.body.changes)
-    for (change of changes){
-      //look up item in database and update checked status
+
+    for (const change of changes){
+      //look up item in database and update checked status (ONLY SAVING LAST ITEM IT SEES)
       User.findById(userInfo._id, function(err, user) {
-      var doc = user.items.id(change.databid);
-      console.log(doc)
-      doc.checked = change.checked
-      user.save()
-    })
+        var doc = user.items.id(change._id);
+        doc.checked = change.checked
+        user.save()
+        console.log("saved:" + doc.link)
+      })
+      // find changed button in userInfo and update checked value, then redirect back
+      for (item of userInfo.items){
+        if (item.link === change.link){
+          item.checked = change.checked
+        }
+      }
     }
 
-    // database update working, just not updating on the page since we only refresh the data when the user logs in
+    // database update working but takes forever, need to find workaround like on the to do list one with the array
     res.redirect("/user/" + username + "/collections")
   })
 
