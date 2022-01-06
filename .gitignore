@@ -1,4 +1,7 @@
-node_modules/
+/node_modules
+npm-debug.log
+.DS_Store
+/*.env
 extra.js
 addsampledataash.js
 sample-data/item-data-ash.js
