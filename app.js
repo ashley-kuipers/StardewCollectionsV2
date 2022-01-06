@@ -4,6 +4,11 @@ const mongoose = require('mongoose')
 const ejs = require("ejs")
 const _ = require("lodash")
 
+// get default data
+const myModule = require('./sample-data/item-data.js');
+const collectionsItemData = myModule.collectionsItemData;
+const commCenterItemData = myModule.commCenterItemData;
+
 // start express server
 const app = express()
 app.set('view engine', 'ejs')
@@ -173,6 +178,74 @@ async function main() {
     res.redirect("/user/" + username + "/goal")
   })
 
+  app.get("/create-user", function(req,res){
+    const createUserError = String(req.query.error);
+    let error = ""
+    switch (createUserError) {
+      case "user-exists":
+        error = "Username already exists. Please choose a new one."
+        break;
+      case "password-length":
+        error = "Password length too short. Please try again."
+        break;
+      case "password-match":
+        error = "Passwords do not match. Please try again."
+        break;
+      default:
+        error = ""
+    }
+
+    res.render("create-user.ejs", {
+      message: error
+    })
+  })
+
+  app.post("/create-user", function(req, res) {
+      const newUsername = req.body.newUsername.toLowerCase()
+      const newPassword = req.body.newPassword
+      const confirmPassword = req.body.confirmPassword
+
+      User.findOne({
+        name: newUsername
+      }, (err, userData) => {
+        if (userData) {
+          // user already exists, try again
+          const userAlreadyExists = encodeURIComponent("user-exists")
+          res.redirect("/create-user/?error=" + userAlreadyExists)
+          //better way to organize this (put errors in one variable and redirect there after. don't feel like doing it now though)
+          console.log("Username already exists")
+        } else {
+          // if passwords match
+          if (newPassword === confirmPassword) {
+            // if password length greater than 8 characters
+            if (newPassword.length >= 8) {
+              //create new user
+              const newUser = new User({
+                name: newUsername,
+                password: newPassword,
+                goal:{
+                  communityCenter:commCenterItemData,
+                  collections:collectionsItemData
+                }
+              })
+              newUser.save()
+              console.log("New user '" + newUsername + "' created")
+              res.redirect("/?newUser=" + newUsername + "&created=success")
+
+            } else {
+              const passwordLength = encodeURIComponent("password-length")
+              res.redirect("/create-user/?error=" + passwordLength)
+              console.log("Password too short")
+            }
+
+          } else {
+            const passwordsDontMatch = encodeURIComponent("password-match")
+            res.redirect("/create-user/?error=" + passwordsDontMatch)
+            console.log("Passwords Don't Match")
+          }
+        }
+      })
+    })
 } // end of main
 
 
