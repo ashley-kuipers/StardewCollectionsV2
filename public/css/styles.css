@@ -56,7 +56,7 @@ a:hover{
 }
 
 .loader.hidden{
-  animation: fadeOut 0.4s;
+  animation: fadeOut 0.7s;
   animation-fill-mode: forwards;
 }
 

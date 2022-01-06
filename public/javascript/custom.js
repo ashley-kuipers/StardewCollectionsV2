@@ -68,11 +68,13 @@ $('.item-button').on({
   }
 })
 
-
-
 $(document).ready(function(){
   // loading gif
-  $("#loader").addClass('hidden')
+  setTimeout(function () {
+    $("#loader").addClass('hidden')
+  }, 2000);
+
+
 
   // category buttons (sets first button to start as clicked)
   $("#v-pills-tab button:first-child").click().addClass('inset')
