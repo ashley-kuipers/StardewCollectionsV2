@@ -72,7 +72,7 @@ $(document).ready(function(){
   // loading gif
   setTimeout(function () {
     $("#loader").addClass('hidden')
-  }, 2000);
+  }, 1800);
 
 
 
