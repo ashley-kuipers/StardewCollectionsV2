@@ -21,6 +21,7 @@ body{
 a{
   color:var(--textDark);
   text-decoration:none;
+  font-weight:bold;
 }
 
 a:hover{
@@ -103,6 +104,7 @@ a:hover{
   border:none;
   letter-spacing:0.05rem;
   background:var(--textLight);
+  margin:0;
 }
 
 .login-form h5, .form-control::placeholder{
@@ -127,13 +129,17 @@ a:hover{
   color:var(--textDark);
   border:none;
   padding:10px;
-  margin:0 2px 8px 2px;
   display:inline-block;
+  margin:0 2px 8px 2px;
 }
 
 .category-button{
   width:100%;
   padding:9px;
+}
+
+.category-button:hover{
+  color:var(--textDark);
 }
 
 .button-shadows {

@@ -107,8 +107,10 @@ async function main() {
 
   app.get("/user/:user/goal", function(req,res){
     const username = req.params.user
+    const usernameTitle = _.upperFirst(req.params.user)
     res.render("choose-goal.ejs", {
-      username:username
+      username:username,
+      usernameTitle:usernameTitle
     })
   })
 
