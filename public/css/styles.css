@@ -2,11 +2,10 @@
   --light:#fce3c2;
   --dark: #341E27;
   --background:#FABD72;
-  --linkHover:#6b6a6a;
-  --buttonHover:#fcae4c;
   --buttonShadow:#995302;
-  --outline-inside:#B14E05;
-  --outline-middle:#FA9305;
+  --outline-inside:#964817;
+  --outline-middle-in:#B14E05;
+  --outline-middle-out:#FA9305;
   --outline-outside:#853605;
   --font: 'Dosis', sans-serif;
 }
@@ -46,17 +45,17 @@ h5{
 /* loader */
 .loader{
   position:fixed;
-  z-index:99;
-  top:64px;
+  top:64;
   left:0;
+  z-index:99;
   width:100%;
   height:100%;
-  background:var(--background);
+  background:url("/images/mountainsBg.png");
 }
 
 .loader img{
   position:fixed;
-  top:45%;
+  top:40%;
 }
 
 .loader.hidden{
@@ -80,16 +79,18 @@ h5{
 
 .stardew-box{
   color:var(--dark);
-  box-shadow: inset -2px 2px 0px 1px rgba(0,0,0,0.17);
+  box-shadow: inset -3px 3px 0px 1px rgba(0,0,0,0.17);
   padding:1.4rem 2rem;
   background:var(--background);
-  border:3px solid var(--outline-inside);
-  outline: var(--outline-middle) solid 3px;
+  border:2px solid var(--outline-inside);
+  outline: var(--outline-middle-in) solid 3px;
 }
 
 .stardew-box-outline{
-  border:6px solid var(--outline-outside);
-  box-shadow:-2px 2px 0px 1px rgba(0,0,0,0.25);
+  border:7px solid var(--outline-middle-out);
+  outline:var(--outline-outside) solid 2px;
+  box-shadow:-4px 4px 0px 1px rgba(0,0,0,0.25);
+  border-radius:3px;
 }
 
 /* navbar */
@@ -103,6 +104,7 @@ h5{
 
 .navbar{
   background-color:var(--background);
+  border-bottom:3px solid var(--outline-inside);
 }
 
 /* login form */
@@ -140,14 +142,11 @@ h5{
   background:none;
 }
 
-.category-button, .goal-button{
-  width:100%;
-  padding:9px;
-}
-
 .goal-button{
   background:var(--light);
   border:none;
+  width:100%;
+  padding:9px;
 }
 
 .category-button:hover{
@@ -215,4 +214,5 @@ h5{
 /* footer */
 .footer p{
   font-weight:normal;
+  color:var(--light);
 }
