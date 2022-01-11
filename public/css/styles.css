@@ -211,6 +211,12 @@ h5{
   border:1px solid var(--dark);
 }
 
+/* about */
+.about-img{
+  border:2px solid var(--dark);
+  width:75%;
+}
+
 /* footer */
 .footer p{
   font-weight:normal;
