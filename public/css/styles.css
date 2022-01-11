@@ -12,6 +12,7 @@
 
 body{
   background:url("/images/mountainsBg.png");
+  background-size:cover;
   text-align:center;
   font-family: var(--font);
   letter-spacing:0.05rem;
