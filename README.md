@@ -4,6 +4,7 @@ Are you ever trying to complete the Stardew Community Center or going for perfec
 ## To Use
 Just head to the website linked on the right and create a user! No email or any personal information needed. Just pick a username and password to save your progress to and you'll be good to go. 
 
+<img src="/public/images/stardew-3.png" width="700">
 <img src="/public/images/stardew-2.png" width="700">
 
 ## How it works
