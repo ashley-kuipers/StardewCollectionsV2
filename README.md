@@ -1,5 +1,5 @@
 # StardewCollections
-Are you ever trying to complete the Stardew Community Center or going for perfection but have a goldfish memory like me and hate having to open the menu constantly to check your progress or remember what you are on the hunt for? Keep this website open on a second monitor and use it to keep track of what you are working on.
+Are you ever trying to complete the Stardew Community Center or going for perfection but have a goldfish memory like we do? Do you hate having to open the menu constantly to check your progress or remember what you are on the hunt for? Make your life SO much easier and keep this website open on a second monitor (or tablet) and use it to keep track of what you are working on.
 
 ## To Use
 Just head to the website linked on the right and create a user! No email or any personal information needed. Just pick a username and password to save your progress to and you'll be good to go. 
@@ -12,3 +12,8 @@ Once you have chosen your goal, you arrive on the collections page. You can hove
 When you are done, you can click the save button and your progress is saved to the MongoDB database. 
 
 <img src="/public/images/stardew-1.gif" width="80%">
+
+## More info
+This application works best on desktop, but can be done on tablet. You cannot use the right click or hover functions but clicking a button will bring up the info on the side (however, only one item at a time will show, you cannot create a list). On mobile, the text pane is gone completely, but the buttons still function to track your progress.
+
+Disclaimer: Any information saved on the website is not encrypted. When creating your user, do not use any personal information. By using the app, you agree to that you are aware of this and that we are not held responsible for any data.
