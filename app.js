@@ -24,8 +24,8 @@ app.use(express.static("public"))
 
 async function main() {
   // connect to database
-  const uri = String(process.env.MONGODB_URI)
-  // const uri = 'mongodb+srv://admin:XmFolEM6Bc1aCPtm@webdevtests.dljay.mongodb.net'
+  // const uri = String(process.env.MONGODB_URI)
+  const uri = 'mongodb+srv://admin:XmFolEM6Bc1aCPtm@webdevtests.dljay.mongodb.net'
   await mongoose.connect(uri + '/stardewcollections?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true

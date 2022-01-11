@@ -1,29 +1,30 @@
 <%- include("partials/header") -%>
 
 <div class="custom-container">
-  <h1 class="mb-4">Create New User</h1>
-  <p><%=message%></p>
+  <div class="stardew-box-outline mt-4">
+    <div class="stardew-box">
+      <h1 class="mb-4">Create New User</h1>
+      <p><%=message%></p>
 
-  <div class="box">
-    <form action="/create-user" method="post" class="login-form">
-      <h5 class="mb-4">Pick a username and password</h5>
+      <form action="/create-user" method="post" class="login-form">
+        <h5 class="mb-4">Pick a username and password</h5>
 
-      <div class="mb-3">
-        <input type="text" class="form-control mb-2" placeholder="Username" required="required" name="newUsername" autofocus>
-        <input type="password" class="form-control mb-2" placeholder="Password" required="required" name="newPassword">
-        <input type="password" class="form-control" placeholder="Confirm Password" required="required" name="confirmPassword">
-        <small class="form-text text-muted"><b>𝑖</b> password must be at least 8 characters</small>
-      </div>
+        <div class="mb-3">
+          <input type="text" class="form-control mb-2" placeholder="Username" required="required" name="newUsername" autofocus>
+          <input type="password" class="form-control mb-2" placeholder="Password" required="required" name="newPassword">
+          <input type="password" class="form-control" placeholder="Confirm Password" required="required" name="confirmPassword">
+          <small class="form-text text-muted"><b>𝑖</b> password must be at least 8 characters</small>
+        </div>
 
-      <div class="d-grid mb-2">
-        <button type="submit" class="btn all-buttons btn-lg">Submit</button>
-      </div>
+        <div class="d-grid mb-2">
+          <button type="submit" class="btn all-buttons btn-lg">Submit</button>
+        </div>
 
-    </form>
-
+      </form>
+    </div>
   </div>
   <br>
-  
+
 </div>
 
 

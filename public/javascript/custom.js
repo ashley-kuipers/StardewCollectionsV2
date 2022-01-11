@@ -3,7 +3,7 @@ let changedButtons = []
 $('.item-button').on({
   mouseenter: function(){  // when you start hovering over a button
     buttonInfo = Object($(this).data("button"))
-    let dataPaneHTML = "<p><span style='font-size:1.2rem'>" + buttonInfo.itemName + "</span><br><span style='font-weight: normal'><u>" + buttonInfo.title1 + "</u><br>" + buttonInfo.info1 + "<br><u>" + buttonInfo.title2 + "</u><br>" + buttonInfo.info2 + "<br><u>" + buttonInfo.title3 + "</u><br>" + buttonInfo.info3 + "<br><u>" + buttonInfo.title4 + "</u><br>" + buttonInfo.info4 + "</p></span>";
+    let dataPaneHTML = "<p class='pt-2'><span style='font-size:1.2rem'>" + buttonInfo.itemName + "</span><br><span style='font-weight: normal'><u>" + buttonInfo.title1 + "</u><br>" + buttonInfo.info1 + "<br><u>" + buttonInfo.title2 + "</u><br>" + buttonInfo.info2 + "<br><u>" + buttonInfo.title3 + "</u><br>" + buttonInfo.info3 + "<br><u>" + buttonInfo.title4 + "</u><br>" + buttonInfo.info4 + "</p></span>";
     $('#item-info-hover').html(dataPaneHTML)
   },
   mouseleave: function(){ // when you stop hovering a button
@@ -43,7 +43,7 @@ $('.item-button').on({
             $("#" + stayinfoid).remove();
             $(this).toggleClass('green-background');
           } else {
-            $('#item-info-stay').append("<div id="+ stayinfoid + "><p><span style='font-size:1.2rem'>" + buttonInfo.itemName + "</span><br><span style='font-weight: normal;'><u>" + buttonInfo.title1 + "</u><br>" + buttonInfo.info1 + "</p></span></div>");
+            $('#item-info-stay').append("<div id="+ stayinfoid + " class='pt-2'><p><span style='font-size:1.2rem'>" + buttonInfo.itemName + "</span><br><span style='font-weight: normal;'><u>" + buttonInfo.title1 + "</u><br>" + buttonInfo.info1 + "</p></span></div>");
             $(this).toggleClass('green-background')
           };
           break;

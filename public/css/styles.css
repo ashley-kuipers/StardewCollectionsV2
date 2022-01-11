@@ -1,34 +1,38 @@
 :root {
-  --textLight:#fce3c2;
-  --textDark: #341E27;
-  --background: #DF7901;
-  --backgroundLight:#FABD72;
+  --light:#fce3c2;
+  --dark: #341E27;
+  --background:#FABD72;
   --linkHover:#6b6a6a;
-  --font: 'Dosis', sans-serif;
-  --border: #b86402;
   --buttonHover:#fcae4c;
-  --shadow:#995302;
+  --buttonShadow:#995302;
+  --outline-inside:#B14E05;
+  --outline-middle:#FA9305;
+  --outline-outside:#853605;
+  --font: 'Dosis', sans-serif;
 }
 
 body{
-  background-color:var(--background);
+  background:url("/images/mountainsBg.png");
   text-align:center;
-  color: var(--textLight);
   font-family: var(--font);
   letter-spacing:0.05rem;
 }
 
 a{
-  color:var(--textDark);
+  color:var(--dark);
   text-decoration:none;
   font-weight:bold;
 }
 
 a:hover{
-  text-decoration:none;
-  color:var(--linkHover);
+  color:var(--dark);
 }
 
+h5{
+  padding-top:2px;
+}
+
+/* keeps footer at bottom even if page isn't full */
 .site{
   display: flex;
   min-height: 100vh;
@@ -43,7 +47,7 @@ a:hover{
 .loader{
   position:fixed;
   z-index:99;
-  top:70px;
+  top:64px;
   left:0;
   width:100%;
   height:100%;
@@ -67,97 +71,118 @@ a:hover{
   }
 }
 
-
 /*containers*/
 .custom-container{
   padding:4% 8%;
-  width:53%;
+  width:55%;
   margin:0 auto;
 }
 
-.box{
-  box-shadow: 3px 4px 0px 0px var(--shadow);
-	background-color:var(--backgroundLight);
-  padding:10px;
-  margin-bottom:10px;
+.stardew-box{
+  color:var(--dark);
+  box-shadow: inset -2px 2px 0px 1px rgba(0,0,0,0.17);
+  padding:1.4rem 2rem;
+  background:var(--background);
+  border:3px solid var(--outline-inside);
+  outline: var(--outline-middle) solid 3px;
 }
 
-/* header */
+.stardew-box-outline{
+  border:6px solid var(--outline-outside);
+  box-shadow:-2px 2px 0px 1px rgba(0,0,0,0.25);
+}
+
+/* navbar */
 .logo-link:hover{
-  color:var(--textDark)
+  color:var(--dark)
 }
 
-/*navbar*/
+.logo-text{
+  font-weight:bold;
+}
+
 .navbar{
-  background-color:var(--backgroundLight);
-  color:var(--textDark);
-	box-shadow: 0px 4px 3px 0px var(--shadow);
+  background-color:var(--background);
 }
 
 /* login form */
 .login-form{
-  padding:20px;
+  padding:0px 20px 20px 20px;
 }
 
-.login-form input, .login-form button{
+.login-form input{
   border-radius:0;
   border:none;
   letter-spacing:0.05rem;
-  background:var(--textLight);
-  margin:0;
+  background:var(--light);
 }
 
 .login-form h5, .form-control::placeholder{
-  color:var(--textDark);
+  color:var(--dark);
 }
 
 .form-control:focus {
   box-shadow: none !important;
   border:none;
-  background:var(--textLight);
-}
-
-.create-user{
-  color:var(--textLight);
+  background:var(--light);
 }
 
 /* buttons */
-.all-buttons {
+.login-button, .category-button, .goal-button, .item-button, .sb-buttons {
   letter-spacing: 0.05rem;
   font-weight:bold;
   border-radius: 0;
-  color:var(--textDark);
-  border:none;
+  color:var(--dark);
+  border:1px solid var(--dark);
   padding:10px;
   display:inline-block;
-  margin:0 2px 8px 2px;
+  margin:0 0 8px 0;
+  background:none;
 }
 
-.category-button{
+.category-button, .goal-button{
   width:100%;
   padding:9px;
 }
 
+.goal-button{
+  background:var(--light);
+  border:none;
+}
+
 .category-button:hover{
-  color:var(--textDark);
+  color:var(--dark);
 }
 
-.button-shadows {
-  box-shadow: 3px 4px 0px 0px var(--shadow);
-  background-color:var(--backgroundLight);
+.item-button{
+  padding:5px;
+  background:none;
+  border:none;
 }
 
-.button-shadows:active, .category-button:focus, .login-form button:active, .login-form button:focus {
+.item-button img{
+  width:55px;
+}
+
+.login-button{
+  border-radius:0;
+  border:none;
+  letter-spacing:0.05rem;
+  background:var(--light);
+  margin:0;
+}
+
+.category-button:focus, .category-button:active, .login-form button:active, .login-form button:focus, .goal-button:active, .goal-button:focus {
 	position:relative;
 	top:1px;
-  box-shadow:inset 3px 4px 0px 0px var(--shadow);
+  box-shadow:inset 3px 4px 0px 0px var(--buttonShadow);
   background:#c46a00 !important;
 }
 
 .inset {
   position:relative;
   top:1px;
-  box-shadow:inset 3px 4px 0px 0px var(--shadow);
+  box-shadow:inset 3px 4px 0px 0px var(--buttonShadow);
   background:#c46a00 !important;
 }
 
@@ -179,10 +204,15 @@ a:hover{
 }
 
 .text-pane{
-  min-height:25.35rem;
+  min-height:32rem;
   max-height:100vh;
-  color:var(--textDark);
+  color:var(--dark);
   font-weight:bold;
+  background:none;
+  border:1px solid var(--dark);
 }
 
-/* some text */
+/* footer */
+.footer p{
+  font-weight:normal;
+}

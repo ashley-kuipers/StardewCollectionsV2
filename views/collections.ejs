@@ -2,69 +2,60 @@
   <div class="loader" id="loader">
     <img src="/images/loading.gif" width="40" class="mb-9">
   </div>
-  <h1 class="mt-4">Collections</h1>
 
+  <div class="stardew-box-outline mt-4">
+    <div class="stardew-box">
+      <h1 class="mb-4">Collections</h1>
 
-  <form action="/user/<%=username%>/<%=goal%>/save" method="post" id="save">
-    <div class="row">
-      <div class="d-flex align-items-start">
+        <form action="/user/<%=username%>/<%=goal%>/save" method="post" id="save">
+          <div class="row gx-4">
+              <!-- category buttons -->
+              <div class="nav nav-pills col" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <% for (const category of categories) { %>
+                  <button class="all-buttons button-shadows category-button" id="v-pills-<%=category.link%>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<%=category.link%>" type="button" role="tab"><%=category.title%></button>
+                <% } %>
+              </div>
+              <!-- items buttons -->
+              <div class="tab-content col-7 text-start" id="v-pills-tabContent" oncontextmenu="return false;">
+                <% for (const category of categories) { %>
+                  <div class="tab-pane text-start" id="v-pills-<%=category.link%>" role="tabpanel">
+                    <% for (const item of items) { %>
+                      <div class="buttons-pane-form">
+                        <% if (item.categoryLink === category.link) { %>
+                          <% const buttonObject = JSON.stringify(item) %>
+                          <button type="button" class="all-buttons button-shadows item-button" data-button="<%=buttonObject%>">
+                            <img src="/<%=item.imagePath%>">
+                          </button>
+                        <% } %>
+                      </div>
+                    <% } %>
+                  </div>
+                <% } %>
+              </div>
+              <input type="hidden" name="changes" id="changes" value="">
 
-        <!-- category buttons -->
-        <div class="nav flex-column nav-pills col-2 me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-          <% for (const category of categories) { %>
-            <button class="all-buttons button-shadows category-button" id="v-pills-<%=category.link%>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<%=category.link%>" type="button" role="tab"><%=category.title%></button>
-          <% } %>
-        </div>
-
-        <!-- items buttons -->
-        <div class="tab-content col-7 text-start" id="v-pills-tabContent" oncontextmenu="return false;">
-          <% for (const category of categories) { %>
-            <div class="tab-pane text-start" id="v-pills-<%=category.link%>" role="tabpanel">
-
-              <% for (const item of items) { %>
-
-                <div class="buttons-pane-form">
-                  <% if (item.categoryLink === category.link) { %>
-                    <% const buttonObject = JSON.stringify(item) %>
-                    <button type="button" class="all-buttons button-shadows item-button" data-button="<%=buttonObject%>">
-                      <img src="/<%=item.imagePath%>" width="45">
-                    </button>
-                  <% } %>
+              <div class="col-3">
+                <div class="text-pane mb-2">
+                  <div id="item-info-stay">
+                  </div>
+                  <div id="item-info-hover">
+                  </div>
                 </div>
 
-              <% } %>
-
-            </div>
-
-        <% } %>
-      </div>
-      <input type="hidden" name="changes" id="changes" value="">
-
-
-      <div class="col-3">
-        <div class="box text-pane">
-          <div id="item-info-stay">
-          </div>
-          <div id="item-info-hover">
-          </div>
-        </div>
-        <div>
-          <button type="submit" class="all-buttons button-shadows w-100 p-2">
-            Save
-          </button>
-          </form>
-          <form class="" action="/<%=username%>/back" method="post" id="back">
-            <button type="submit" class="all-buttons button-shadows w-100 p-2">
-              Back to goals
-            </button>
-          </form>
-
-        </div>
-      </div>
+                <button type="submit" class="sb-buttons w-100 p-2">
+                  Save
+                </button>
+        </form>
+                <form class="" action="/<%=username%>/back" method="post" id="back">
+                  <button type="submit" class="sb-buttons w-100 p-2">
+                    Back to goals
+                  </button>
+                </form>
 
     </div>
-    </div> <!--end of row-->
-
+  </div>
+</div> <!--end of container in header-->
+</div>
 
 
   <!-- custom js -->

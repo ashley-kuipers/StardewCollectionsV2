@@ -1,28 +1,28 @@
 <%- include("partials/header") -%>
 
 <div class="custom-container">
-  <h1 class="mb-4">Stardew Valley Collections</h1>
-  <p><%=message%></p>
+  <div class="stardew-box-outline">
+    <div class="stardew-box">
+      <h1 class="mb-4">Stardew Valley Collections</h1>
+      <p><%=message%></p>
+      <form action="/signin" method="post" class="login-form">
+        <h5 class="mb-4">Log in to keep track of community center and collections on your quest to perfection!</h5>
 
-  <div class="box">
-    <form action="/signin" method="post" class="login-form">
-      <h5 class="mb-4">Log in to keep track of community center and collections on your quest to perfection!</h5>
+        <div class="mb-3">
+          <input type="text" class="form-control mb-2" placeholder="Username" required="required" name="username" autofocus>
+          <input type="password" class="form-control" placeholder="Password" required="required" name="password">
+        </div>
 
-      <div class="mb-3">
-        <input type="text" class="form-control mb-2" placeholder="Username" required="required" name="username" autofocus>
-        <input type="password" class="form-control" placeholder="Password" required="required" name="password">
-      </div>
+        <div class="d-grid mb-2">
+          <button type="submit" class="btn login-button btn-lg">Log in</button>
+        </div>
 
-      <div class="d-grid mb-2">
-        <button type="submit" class="btn all-buttons btn-lg">Log in</button>
-      </div>
-
-    </form>
-
+      </form>
+      <p>No Account? <u><a href="/create-user">Create one!</a></u></p>
+    </div>
   </div>
-  <br>
-  <p>No Account? <u><a href="/create-user" class="create-user">Create one!</a></u></p>
 </div>
+
 
 <script type="text/javascript">
   $(document).ready(function(){
