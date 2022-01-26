@@ -1,5 +1,6 @@
 let buttonInfo = {};
 let changedButtons = []
+
 $('.item-button').on({
   mouseenter: function(){  // when you start hovering over a button
     buttonInfo = Object($(this).data("button"))
@@ -74,8 +75,6 @@ $(document).ready(function(){
     $("#loader").addClass('hidden')
   }, 1800);
 
-
-
   // category buttons (sets first button to start as clicked)
   $("#v-pills-tab button:first-child").click().addClass('inset')
   $("#v-pills-tab button:not(:first)").click(function(){
@@ -85,8 +84,7 @@ $(document).ready(function(){
   // check for different background colors and add initial checked value to button
   $(".item-button").trigger("onLoadButtonEvent");
 
-  // on form submit, check how many chagned buttons in array, if none, don't do anything and alert "no changes"
-
+  // on save form submit, check how many changed buttons in array, if none, don't do anything and alert "no changes"
   $("#save").submit(function(e){
     if(changedButtons.length === 0){
       e.preventDefault();
@@ -96,6 +94,7 @@ $(document).ready(function(){
     }
   });
 
+  // alert user if they haven't saved changes
   $("#back").submit(function(e){
     if(changedButtons.length > 0){
       if(confirm("You have unsaved changes. These will be lost. Go back anyway?") ==false){

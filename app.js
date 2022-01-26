@@ -65,6 +65,7 @@ async function main() {
     password: String,
     goals:[
       {
+        link:String,
         name:String,
         items:[itemSchema]
       }
@@ -130,11 +131,13 @@ async function main() {
           } else {
             const goals=[
               {
-                name:"community-center",
+                link:"community-center",
+                name:"Community Center",
                 items:commCenterItemData
               },
               {
-                name:"collections",
+                link:"collections",
+                name:"Collections",
                 items:collectionsItemData
               }
             ]
@@ -151,11 +154,13 @@ async function main() {
     })
 
   app.route("/goal/:goal")
+    // display collection page
     .get((req,res)=>{
       if(req.isAuthenticated()){
         User.findOne({_id:req.user._id}, (err, user)=>{
           for (const goal of user.goals){
-            if(req.params.goal === goal.name){
+            if(req.params.goal === goal.link){
+              // get categories list
               let categories = []
               for(item of goal.items){
                 categories.push({
@@ -174,88 +179,32 @@ async function main() {
       } else {
         res.redirect("/")
       }
-
-      // // get category list
-      // let categories = []
-      // for(item of goalItems){
-      //   categories.push({
-      //     title:item.category,
-      //     link:item.categoryLink
-      //   })
-      // }
-      // categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
-      //
-      // // send categories and buttons to template
-      // res.render("collections.ejs", {
-      //   categories: categories,
-      //   items:goalItems,
-      //   goal:goal
-      // })
     })
-
-
-  app.get("/user/:user/goal/:goal", function(req,res){
-
-
-
-
-
-    const username = req.params.user
-    const goal = req.params.goal
-
-    // get category list
-    let categories = []
-    for(item of goalItems){
-      categories.push({
-        title:item.category,
-        link:item.categoryLink
-      })
-    }
-    categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
-
-
-    // send categories and buttons to template
-    res.render("collections.ejs", {
-      categories: categories,
-      goal:goal
-    })
-  })
-
-  app.get("/test", function(req,res){
-    res.render("test.ejs")
-  })
-
-  app.post("/user/:user/:goal/save", function(req,res){
-    const username = req.params.user
-    const goal = req.params.goal
-    const changes = JSON.parse(req.body.changes)
-
-
-    for (const change of changes){
-      //look up item in database and update checked status (ONLY SAVING LAST ITEM IT SEES)
-      User.findById(userInfo._id, function(err, user) {
-        var doc = user.goal[goal];
-        var doc2 = doc.id(change._id);
-        doc2.checked = change.checked
-        user.save()
-        console.log("saved:" + doc2.link)
-      })
-      // find changed button in userInfo and update checked value, then redirect back
-      for (item of goalItems){
-        if (item.link === change.link){
-          item.checked = change.checked
-        }
+    // save pressed button changes
+    .post((req,res)=>{
+      if(req.isAuthenticated()){
+        const changes = JSON.parse(req.body.changes)
+        //look up item in database and update checked status
+        User.findOne({_id:req.user._id}, (err, user)=>{
+          const currentGoal = user.goals.id(req.body.goalDBId)
+          for (const item of currentGoal.items){
+            for(const change of changes){
+              if (change.itemName === item.itemName){
+                item.checked = change.checked
+              }
+            }
+          }
+          user.save()
+          res.redirect("/goal/" + req.params.goal)
+        })
+      } else {
+        res.redirect("/")
       }
-    }
-    // database update working but takes forever, need to find workaround like on the to do list one with the array
-    res.redirect("/user/" + username + "/goal/" + goal)
-  })
+    })
 
-  app.post("/:user/back", function(req,res){
-    username = req.params.user
-    res.redirect("/user/" + username + "/goal")
+  app.post("/back", function(req,res){
+    res.redirect("/goal")
   })
-
 
   app.get("/about", function(req,res){
     res.render("about.ejs")

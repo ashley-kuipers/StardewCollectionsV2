@@ -1,21 +1,24 @@
 <%- include("partials/header") -%>
-<div class="loader col-12" id="loader">
-  <img src="/images/loading2.gif" width="40" class="mb-9">
-</div>
-
   <div class="stardew-box-outline mt-4">
     <div class="stardew-box">
-      <h1 class="mb-4">Collections</h1>
-        <form action="/goal/<%= goal.name %>/save" method="post" id="save">
+      <h1 class="mb-4"><%= goal.name %></h1>
+
+        <form action="/goal/<%= goal.link %>" method="post" id="save">
+          <input type="hidden" name="changes" id="changes" value="">
+          <input type="hidden" name="goalDBId" value="<%= goal._id %>">
+
           <div class="row gx-4">
               <!-- category buttons -->
               <div class="nav nav-pills col-md-2 col-xs-12" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
                 <% for (const category of categories) { %>
                   <button class="category-button w-100 p-2" id="v-pills-<%= category.link %>-tab" data-bs-toggle="pill" data-bs-target="#v-pills-<%= category.link %>" type="button" role="tab"><%=category.title%></button>
                 <% } %>
+
               </div>
               <!-- items buttons -->
               <div class="tab-content col-xs-12 col-md-7 text-start" id="v-pills-tabContent" oncontextmenu="return false;">
+
                 <% for (const category of categories) { %>
                   <div class="tab-pane text-start" id="v-pills-<%= category.link %>" role="tabpanel">
                     <% for (const item of goal.items) { %>
@@ -30,8 +33,9 @@
                     <% } %>
                   </div>
                 <% } %>
+
               </div>
-              <input type="hidden" name="changes" id="changes" value="">
+
 
               <div class="col-md-3 col-xs-12">
                 <div class="text-pane mb-2 d-none d-md-block">
@@ -45,7 +49,7 @@
                   Save
                 </button>
         </form>
-                <form class="" action="/" method="post" id="back">
+                <form class="" action="/back" method="post" id="back">
                   <button type="submit" class="sb-buttons w-100 p-2">
                     Back to goals
                   </button>
