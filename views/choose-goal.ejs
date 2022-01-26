@@ -3,14 +3,12 @@
 <div class="custom-container">
   <div class="stardew-box-outline">
     <div class="stardew-box">
-      <h1>Hello <%=usernameTitle%>!</h1>
+      <h1>Hello!</h1>
       <h5 class="mb-4">What are you trying to complete?</h5>
 
-      <a href="/user/<%=username%>/goal/comm-center" class="all-buttons goal-button">Community Center</a>
-      <a href="/user/<%=username%>/goal/collections" class="all-buttons goal-button">All Collections</a>
-      <% if (username === "ashann") { %>
-      <a href="/user/<%=username%>/goal/hidden" class="all-buttons category-button">Hidden</a>
-      <% } %>
+      <a href="/goal/community-center" class="all-buttons goal-button">Community Center</a>
+      <a href="/goal/collections" class="all-buttons goal-button">All Collections</a>
+
     </div>
   </div>
 </div>

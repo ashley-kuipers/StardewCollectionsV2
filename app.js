@@ -1,13 +1,17 @@
+require('dotenv').config()
 const express = require("express")
 const bodyParser = require("body-parser")
 const mongoose = require('mongoose')
 const ejs = require("ejs")
 const _ = require("lodash")
+const session = require('express-session')
+const passport = require('passport')
+const passportLocalMongoose = require('passport-local-mongoose')
 
 // get default data
-const myModule = require('./sample-data/item-data.js');
-const collectionsItemData = myModule.collectionsItemData;
-const commCenterItemData = myModule.commCenterItemData;
+const dataModule = require('./sample-data/item-data.js');
+const collectionsItemData = dataModule.collectionsItemData;
+const commCenterItemData = dataModule.commCenterItemData;
 
 // start express server
 const app = express()
@@ -22,13 +26,22 @@ app.use(bodyParser.urlencoded({
 // helps it use our css
 app.use(express.static("public"))
 
+// for sessions
+app.use(session({
+  secret:process.env.SECRET,
+  resave:false,
+  saveUninitialized:false
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+
 async function main() {
   // connect to database
-  const uri = String(process.env.MONGODB_URI)
-  await mongoose.connect(uri + '/stardewcollections?retryWrites=true&w=majority', {
+  const url = process.env.DATABASE;
+  await mongoose.connect(url, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-  })
+  });
 
   // models and schema
   const itemSchema = new mongoose.Schema({
@@ -48,83 +61,147 @@ async function main() {
     info4: String
   })
   const userSchema = new mongoose.Schema({
-    name: String,
+    username: String,
     password: String,
-    goal:{
-      communityCenter:[itemSchema],
-      collections:[itemSchema],
-      hidden:[itemSchema]
-    }
+    goals:[
+      {
+        name:String,
+        items:[itemSchema]
+      }
+    ]
   })
+  userSchema.plugin(passportLocalMongoose)
   const User = mongoose.model("User", userSchema)
+
+
+  passport.use(User.createStrategy());
+  passport.serializeUser(User.serializeUser())
+  passport.deserializeUser(User.deserializeUser())
 
   // declare variables
   let goalItems = []
 
   app.get("/", function(req,res){
-    const error = req.query.error
-    if (error === "username"){
-      res.render("index.ejs", {
-        message:"That username does not exist. Please try again or create new user"
-      })
-    } else if (error === "password-match") {
-      res.render("index.ejs", {
-        message:"That password does not match our records. Please try again."
-      })
+    if(req.isAuthenticated()){
+      res.redirect("/goal")
     } else {
-      res.render("index.ejs", {
+      res.render("index.ejs",{
         message:""
       })
     }
   })
-
-  app.post("/signin", function(req,res){
-    const usernameEntered = req.body.username.toLowerCase()
-    const passwordEntered = req.body.password
-
-    // go through sign in procedure, get user data
-    User.findOne({name: usernameEntered}, (err, userData) => {
-      let error=""
-      if (userData) {
-        // if they exist, check password
-        if(passwordEntered === userData.password){
-          // if password matches, get data
-          userInfo = userData
-        } else {
-          error="password-match"
-        }
+  app.post("/login", (req,res)=>{
+    const user = new User({
+      username:req.body.username,
+      password:req.body.password
+    })
+    req.login(user, (err)=>{
+      if(err){
+        console.log(err)
+        res.redirect("/")
       } else {
-        error="username"
-      }
-
-      if (error===""){
-        res.redirect("/user/"+ usernameEntered + "/goal")
-      } else {
-        res.redirect("/?error=" + encodeURIComponent(error))
+        passport.authenticate("local")(req,res,()=>{
+          res.redirect("/goal")
+        })
       }
     })
   })
 
-  app.get("/user/:user/goal", function(req,res){
-    const username = req.params.user
-    const usernameTitle = _.upperFirst(req.params.user)
-    res.render("choose-goal.ejs", {
-      username:username,
-      usernameTitle:usernameTitle
-    })
+  app.get("/goal", (req,res)=>{
+    if(req.isAuthenticated()){
+      res.render("choose-goal.ejs")
+    } else {
+      res.redirect("/")
+    }
   })
+
+  app.route("/create-user")
+    .get((req,res)=>{
+      res.render("create-user.ejs", {
+        message: ""
+      })
+    })
+    .post((req,res)=>{
+      if(req.body.password === req.body.confirmPassword && req.body.password.length > 7){
+        User.register({username:req.body.username}, req.body.password, (err, user)=>{
+          if(err){
+            console.log(err);
+            res.redirect("/create-user") // add error message
+          } else {
+            const goals=[
+              {
+                name:"community-center",
+                items:commCenterItemData
+              },
+              {
+                name:"collections",
+                items:collectionsItemData
+              }
+            ]
+            user.goals=goals
+            user.save()
+            passport.authenticate("local")(req,res,()=>{
+              res.redirect("/goal")
+            })
+          }
+        })
+      } else {
+        res.redirect("/create-user") // add error message
+      }
+    })
+
+  app.route("/goal/:goal")
+    .get((req,res)=>{
+      if(req.isAuthenticated()){
+        User.findOne({_id:req.user._id}, (err, user)=>{
+          for (const goal of user.goals){
+            if(req.params.goal === goal.name){
+              let categories = []
+              for(item of goal.items){
+                categories.push({
+                  title:item.category,
+                  link:item.categoryLink
+                })
+              }
+              categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
+              res.render("collections.ejs", {
+                categories: categories,
+                goal:goal
+              })
+            }
+          }
+        })
+      } else {
+        res.redirect("/")
+      }
+
+      // // get category list
+      // let categories = []
+      // for(item of goalItems){
+      //   categories.push({
+      //     title:item.category,
+      //     link:item.categoryLink
+      //   })
+      // }
+      // categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
+      //
+      // // send categories and buttons to template
+      // res.render("collections.ejs", {
+      //   categories: categories,
+      //   items:goalItems,
+      //   goal:goal
+      // })
+    })
+
 
   app.get("/user/:user/goal/:goal", function(req,res){
+
+
+
+
+
     const username = req.params.user
     const goal = req.params.goal
-
-    if (goal === "comm-center"){
-      goalItems = userInfo.goal.communityCenter
-    } else if (goal === "collections") {
-      goalItems = userInfo.goal.collections
-    } else {
-      goalItems = userInfo.goal.hidden
-    }
 
     // get category list
     let categories = []
@@ -136,11 +213,10 @@ async function main() {
     }
     categories = [...new Map(categories.map(v => [JSON.stringify([v.title,v.link]), v])).values()]
 
+
     // send categories and buttons to template
     res.render("collections.ejs", {
       categories: categories,
-      items:goalItems,
-      username: username,
       goal:goal
     })
   })
@@ -180,74 +256,6 @@ async function main() {
     res.redirect("/user/" + username + "/goal")
   })
 
-  app.get("/create-user", function(req,res){
-    const createUserError = String(req.query.error);
-    let error = ""
-    switch (createUserError) {
-      case "user-exists":
-        error = "Username already exists. Please choose a new one."
-        break;
-      case "password-length":
-        error = "Password length too short. Please try again."
-        break;
-      case "password-match":
-        error = "Passwords do not match. Please try again."
-        break;
-      default:
-        error = ""
-    }
-
-    res.render("create-user.ejs", {
-      message: error
-    })
-  })
-
-  app.post("/create-user", function(req, res) {
-      const newUsername = req.body.newUsername.toLowerCase()
-      const newPassword = req.body.newPassword
-      const confirmPassword = req.body.confirmPassword
-
-      User.findOne({
-        name: newUsername
-      }, (err, userData) => {
-        if (userData) {
-          // user already exists, try again
-          const userAlreadyExists = encodeURIComponent("user-exists")
-          res.redirect("/create-user/?error=" + userAlreadyExists)
-          //better way to organize this (put errors in one variable and redirect there after. don't feel like doing it now though)
-          console.log("Username already exists")
-        } else {
-          // if passwords match
-          if (newPassword === confirmPassword) {
-            // if password length greater than 8 characters
-            if (newPassword.length >= 8) {
-              //create new user
-              const newUser = new User({
-                name: newUsername,
-                password: newPassword,
-                goal:{
-                  communityCenter:commCenterItemData,
-                  collections:collectionsItemData
-                }
-              })
-              newUser.save()
-              console.log("New user '" + newUsername + "' created")
-              res.redirect("/?newUser=" + newUsername + "&created=success")
-
-            } else {
-              const passwordLength = encodeURIComponent("password-length")
-              res.redirect("/create-user/?error=" + passwordLength)
-              console.log("Password too short")
-            }
-
-          } else {
-            const passwordsDontMatch = encodeURIComponent("password-match")
-            res.redirect("/create-user/?error=" + passwordsDontMatch)
-            console.log("Passwords Don't Match")
-          }
-        }
-      })
-    })
 
   app.get("/about", function(req,res){
     res.render("about.ejs")
