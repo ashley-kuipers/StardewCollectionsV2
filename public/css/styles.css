@@ -191,7 +191,13 @@ h5{
 }
 
 /* footer */
-.footer p{
+.footer a{
   font-weight:normal;
   color:var(--light);
+  font-size:0.85rem;
+  transition:0.5s;
+}
+
+.footer a:hover{
+  color:var(--background);
 }
